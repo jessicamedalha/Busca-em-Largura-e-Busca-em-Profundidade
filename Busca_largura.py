@@ -4,7 +4,7 @@ import math
 from numpy import loadtxt
 from random import sample
 
-class filas_de_busca(object):
+class filas_de_busca(object): #filas que guardam a localização do nós e seus filhos
 
 	def __init__(self):
 		self.fila_pai = []
@@ -13,7 +13,7 @@ class filas_de_busca(object):
 		self.ptr_filho = []
 
 
-	def add_pai(self,elemento, posicao_i, posicao_j):
+	def add_pai(self,elemento, posicao_i, posicao_j): 
 		if(elemento == 1):
 			self.fila_pai.append(posicao_i + 1)
 			self.fila_pai.append(posicao_j)
@@ -28,7 +28,6 @@ class filas_de_busca(object):
 			self.fila_pai.append(posicao_j - 1)
 
 	def add_filho(self,elemento, posicao_i, posicao_j):
-		print("aqui")
 		if(elemento == 1):
 			self.fila_filhos.append(posicao_i + 1)
 			self.fila_filhos.append(posicao_j)
@@ -77,18 +76,17 @@ class busca_largura():
 
 		self.percorre_labirinto()
 
-					
-
 	def percorre_labirinto(self): #acaminha pelo labirinto
 		while(1):
+
 			num_direcoes = self.tem_direcoes(self.posicao_i, self.posicao_j ) 
-			##print("numero de direcoes",num_direcoes)
-			if( num_direcoes != 0 ): #tem direções disponiveis para andar
+			#print("numero de direcoes",num_direcoes)
+			if( num_direcoes != 0 and num_direcoes != 3): #tem direções disponiveis para andar
 				self.direcoes = sample(range(1, 5), 4) #vetor com indices aleatorios de direções
 				#print(self.direcoes)
 				for i in range(len(self.direcoes)): 
 					netos = self.verifica_direcao(self.direcoes[i], num_direcoes) #verifica se a direção ta disponivel para andar
-					print("netos", netos)
+					#print("netos", netos)
 					if( netos >= 0):#se ta disponivel para andar
 						posicao_i = self.posicao_i
 						posicao_j = self.posicao_j
@@ -99,42 +97,65 @@ class busca_largura():
 						elif(netos > 0):# se a direção possui outros caminhos abertos
 							self.filas.add_pai(self.direcoes[i], self.posicao_i, self.posicao_j)
 							self.filas.remove_filho()
-							print("pai",self.filas.fila_pai)
-							print("filhos2",self.filas.fila_filhos)
+							#print("pai",self.filas.fila_pai)
+							#print("filhos2",self.filas.fila_filhos)
 
-				self.labirino [self.posicao_i][self.posicao_j] = self.pegada
+				self.labirinto [self.posicao_i][self.posicao_j] = self.pegada
 				self.proximo_pai_fila()
+				print(self.labirinto)
+				#print("pai",self.filas.fila_pai)
+				#print("filhos2",self.filas.fila_filhos)
 
-			'''else: #naõ tem direções disponiveis para andar
-				self.volta_direcao_anterior()'''
-			break
+			elif(num_direcoes == 3):
+				print(self.labirinto)
+				print("final")
+				break
+			else: #naõ tem direções disponiveis para andar
+				self.filas.remove_pai()
+				self.posicao_i = self.filas.fila_pai[0]
+				self.posicao_j= self.filas.fila_pai[1]
+
+				
+			
 
 
 	def tem_direcoes(self, posicao_i, posicao_j):# verifica se há direções disponivel e retonar as direções disponiveis
 		contador = 0
 		#baixo
-		if((self.labirinto[posicao_i + 1][posicao_j] == self.caminho) or (self.labirinto[posicao_i + 1][posicao_j] == self.saida)):
+		if((posicao_i+1 <= len(self.labirinto)-1 and self.labirinto[posicao_i + 1][posicao_j] == self.caminho) or (posicao_i+1 <= len(self.labirinto)-1 and self.labirinto[posicao_i + 1][posicao_j] == self.saida)):
 			contador+=1
+			if((self.labirinto[posicao_i + 1][posicao_j] == self.saida)):
+				contador = 3
+				return contador
 
 		#cima
-		elif((self.labirinto[posicao_i - 1][posicao_j] == self.caminho) or (self.labirinto[posicao_i - 1][posicao_j] == self.saida)):
+		if((posicao_i-1 >= 0 and self.labirinto[posicao_i - 1][posicao_j] == self.caminho) or (posicao_i-1 >= 0 and self.labirinto[posicao_i - 1][posicao_j] == self.saida)):
 			contador+= 10
+			if(self.labirinto[posicao_i - 1][posicao_j] == self.saida):
+				contador = 3
+				return contador
 
 		#direita
-		elif((self.labirinto[posicao_i][posicao_j + 1] == self.caminho) or (self.labirinto[posicao_i ][posicao_j + 1] == self.saida)):
+		if((posicao_j+1 <= len(self.labirinto)-1 and self.labirinto[posicao_i][posicao_j + 1] == self.caminho) or (posicao_j+1 <= len(self.labirinto)-1 and self.labirinto[posicao_i ][posicao_j + 1] == self.saida)):
 			contador += 100
+			if(self.labirinto[posicao_i ][posicao_j + 1] == self.saida):
+				contador = 3
+				return contador 
 
 
 		#esquerda
-		elif((self.labirinto[posicao_i][posicao_j - 1] == self.caminho) or (self.labirinto[posicao_i ][posicao_j - 1] == self.saida)):
+		if((posicao_j-1 >= 0 and self.labirinto[posicao_i][posicao_j - 1] == self.caminho) or (posicao_j-1 >= 0 and self.labirinto[posicao_i ][posicao_j - 1] == self.saida)):
 			contador += 1000
+			if(self.labirinto[posicao_i ][posicao_j - 1] == self.saida):
+				contador = 3
+				return contador 
 
 		return contador 
 
 	def verifica_direcao(self,i, num_direcoes): # verifica se na direções é possivel caminhar e se elas são ou não caminho sem saida
 		j = 1000
 		retorno = 0
-		print(i, num_direcoes)
+		#print(i, num_direcoes)
 		for k in range (4,0, -1):
 			'''print("k",k)
 			print("num_direcoes",num_direcoes)
@@ -147,37 +168,36 @@ class busca_largura():
 				if((k) == i):
 					if(i == 1):
 						retorno = self.tem_direcoes((self.posicao_i + 1), self.posicao_j)
-						print("retorno:", retorno)
+						#print("retorno:", retorno)
 						return retorno
 						#break
 					elif(i == 2):
 						retorno = self.tem_direcoes((self.posicao_i - 1), self.posicao_j)
-						print("retorno:", retorno)
+						#print("retorno:", retorno)
 						return retorno
 						#break
 					elif(i == 3):
 						retorno = self.tem_direcoes((self.posicao_i ), (self.posicao_j + 1))
-						print("retorno:", retorno)
+						#print("retorno:", retorno)
 						return retorno
 						#break
 					elif(i == 4):
 						retorno = self.tem_direcoes((self.posicao_i), (self.posicao_j - 1))
-						print("retorno:", retorno)
+						#print("retorno:", retorno)
 						return retorno
 						#break
 	
 			j = 10**((math.log10(j))-1)
 			#print("retorno:", retorno)
-		return retorno
+		return retorno	
 
+	def proximo_pai_fila(self):##ponteiro para fila pai, arrumar
+		self.posicao_i = self.filas.fila_pai[0]
+		self.posicao_j= self.filas.fila_pai[1]
+		self.filas.remove_pai()
 
 
 		
-
-	'''def proximo_pai_fila():##ponteiro para fila pai, arrumar
-		self.posicao_i = fila_pai[self.ptr_pai + 1]
-		self.posicao_j= fila_pai[self.ptr_pai + 2]
-		'''
 
 
 
