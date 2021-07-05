@@ -7,5 +7,5 @@ Trabalho da disciplina "sistemas inteligentes" da UFSC. Neste trabalho foi desen
 * Python 3
 * Bibliotecas: random, numpy e math
 
-# Instruções: 
-Para executar o programa é necessário digitar no terminal: python3 main.py
+# Instruções 
+* Para executar o programa é necessário digitar no terminal: python3 main.py
