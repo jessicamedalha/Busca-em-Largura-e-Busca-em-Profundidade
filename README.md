@@ -1,7 +1,7 @@
 # Busca-em-Largura-e-Busca-em-Profundidade
 
 Trabalho da disciplina "sistemas inteligentes" da UFSC. Neste trabalho foi desenvolvido dois algotimos de busca, a 
-"busca em largura" e a "busca em profundidade",para a resolução de labirintos genericos. 
+"busca em largura" e a "busca em profundidade", para a resolução de labirintos genéricos. 
 
 # Requisitos
 * Python 3
