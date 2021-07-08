@@ -12,7 +12,6 @@ class filas_de_busca(object): #filas que guardam a localização do nós e seus 
 		self.ptr_pai = []
 		self.ptr_filho = []
 
-
 	def add_pai(self,elemento, posicao_i, posicao_j): 
 		if(elemento == 1):
 			self.fila_pai.append(posicao_i + 1)
@@ -65,9 +64,13 @@ class busca_largura():
 		self.caminho = 1
 		self.direcoes = []
 		self.pegada = 5
+		self.custoCaminho = [0]
+		self.caminhoPercorrido = []
 
 		self.posicao_i = 0
 		self.posicao_j = 0
+		self.posicaoInicialI = 0
+		self.posicaoInicialJ = 0
 
 		self.filas = filas_de_busca()
 
@@ -80,7 +83,9 @@ class busca_largura():
 			for j in range(len(self.labirinto)):
 				if(self.labirinto[i][j] == self.entrada):
 					self.posicao_i = i
-					self.posicao_j = j 
+					self.posicaoInicialI = i
+					self.posicao_j= j 
+					self.posicaoInicialJ = j
 
 		self.percorre_labirinto()
 
@@ -92,6 +97,8 @@ class busca_largura():
 			if( num_direcoes != 0 and num_direcoes != 3): #tem direções disponiveis para andar
 
 				self.direcoes = sample(range(1, 5), 4) #vetor com indices aleatorios de direções
+				self.custoCaminho[0] += 1
+				self.caminhoPercorrido.append([self.posicao_i, self.posicao_j])
 				for i in range(len(self.direcoes)): 
 
 					netos = self.verifica_direcao(self.direcoes[i], num_direcoes) #verifica se a direção ta disponivel para andar
@@ -99,6 +106,7 @@ class busca_largura():
 						posicao_i = self.posicao_i
 						posicao_j = self.posicao_j
 
+						self.filas.add_filho(self.direcoes[i], self.posicao_i, self.posicao_j)
 						if(netos == 0):# se a direção é caminha sem saida
 							self.filas.remove_filho()
 
@@ -108,22 +116,26 @@ class busca_largura():
 
 				self.labirinto [self.posicao_i][self.posicao_j] = self.pegada
 				self.proximo_pai_fila()
-				print(self.labirinto)
-				print("\n")
+				#print(self.labirinto)
+				#print("\n")
 				#print("pai",self.filas.fila_pai)
 				#print("filhos2",self.filas.fila_filhos)
 
 			elif(num_direcoes == 3):
 				self.labirinto [self.posicao_i][self.posicao_j] = self.pegada
+				print('Busca por Largura:')
+				print(f'Estado inicial: {self.posicaoInicialI} linha {self.posicaoInicialJ} coluna')
+				print(f'Custo de caminho: {self.custoCaminho}')
+				print(f'Custo de passo: {self.custoCaminho}')
+				print(f'Caminho percorridos: {self.caminhoPercorrido}')
+				print('Labirinto:')
 				print(self.labirinto)
-				print("final")
 				break
 
 			else: #naõ tem direções disponiveis para andar
 				#print("pai",self.filas.fila_pai)
 				#print("filhos2",self.filas.fila_filhos)
 				self.labirinto [self.posicao_i][self.posicao_j] = self.pegada
-				print(self.labirinto)
 				self.proximo_pai_fila()
 				#break
 				#self.filas.remove_pai()
