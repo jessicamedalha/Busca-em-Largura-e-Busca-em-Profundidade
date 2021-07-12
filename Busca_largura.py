@@ -74,9 +74,22 @@ class busca_largura():
 
 		self.filas = filas_de_busca()
 
-		self.labirinto = np.loadtxt('labirinto.dat', dtype='int', delimiter='	')
+		self.lab = self.seleciona_labirinto()
+
+		self.labirinto = np.loadtxt( self.lab, dtype='int', delimiter='	')
 		self.ponto_de_partida()
 
+	def seleciona_labirinto(self):
+		while(1):
+			a = input("Digite o número do labirinto que você deseja percorrer (1,2,3 ou 4): ")
+			if(a == '1'):
+				return 'Labirintos/labirinto_1.dat'
+			elif(a == '2'):
+				return 'Labirintos/labirinto_2.dat'
+			elif(a == '3'):
+				return 'Labirintos/labirinto_3.dat'
+			elif(a == '4'):
+				return 'Labirintos/labirinto_4.dat'
 
 	def ponto_de_partida(self):
 		for i in range(len(self.labirinto)):
